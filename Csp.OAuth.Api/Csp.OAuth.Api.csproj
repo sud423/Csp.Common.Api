@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Csp.EF" Version="1.0.0" />
+    <PackageReference Include="Csp.Jwt" Version="1.0.0" />
+    <PackageReference Include="Csp.Web" Version="1.0.0" />
+  </ItemGroup>
+
+
+</Project>
