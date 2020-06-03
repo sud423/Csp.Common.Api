@@ -30,6 +30,12 @@ namespace Csp.OAuth.Api.Controllers
             _jwtTokenGenerator = jwtTokenGenerator;
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok("hello world!");
+        }
+
         [Route("sigin")]
         [HttpPost]
         public async Task<IActionResult> SigIn([FromBody]LoginModel model)
@@ -165,12 +171,13 @@ namespace Csp.OAuth.Api.Controllers
                 new Claim(ClaimTypes.Sid,$"{user.Id}"),
                 new Claim("HeadImgUrl",user.HeadImgUrl??""),
                 new Claim("OpenId",user.ExternalLogin?.OpenId??""),
-                new Claim("aud", "OAuth"),
-                new Claim("aud", "Blog"),
-                new Claim("aud", "Upload"),
+                new Claim("aud", "OAuthApi"),
+                new Claim("aud", "BlogApi"),
+                new Claim("aud", "UploadApi"),
                 new Claim("aud", "AskApi"),
                 new Claim("aud", "AskWeb"),
-                new Claim("aud", "MtWeb")
+                new Claim("aud", "MtWeb"),
+                new Claim("aud", "EduApi")
             };
 
             return myClaims;
