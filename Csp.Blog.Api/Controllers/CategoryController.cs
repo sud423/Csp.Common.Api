@@ -75,7 +75,7 @@ namespace Csp.Blog.Api.Controllers
         public async Task<IActionResult> Create([FromBody]Category category)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState.First());
+                return BadRequest(ModelState.ToOptResult());
 
             //_blogDbContext.Entry(category).Property(a => a.CreatedAt).IsModified = false;
 

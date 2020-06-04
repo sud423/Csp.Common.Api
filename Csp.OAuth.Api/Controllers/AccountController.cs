@@ -41,7 +41,7 @@ namespace Csp.OAuth.Api.Controllers
         public async Task<IActionResult> SigIn([FromBody]LoginModel model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState.First());
+                return BadRequest(ModelState.ToOptResult());
 
             var user = await _ctx.Users.Include(a => a.UserLogin).SingleOrDefaultAsync(a => a.UserLogin.UserName == model.UserName);
 
@@ -62,7 +62,7 @@ namespace Csp.OAuth.Api.Controllers
         public async Task<IActionResult> SignInByPassword([FromBody]LoginModel model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState.First());
+                return BadRequest(ModelState.ToOptResult());
 
             var user = await _ctx.Users.Include(a=>a.UserLogin).SingleOrDefaultAsync(a => a.UserLogin.UserName == model.UserName && a.TenantId== model.TenantId);// && a.UserLogin.WebSiteId==model.WebSiteId
             if (user == null)
@@ -114,7 +114,7 @@ namespace Csp.OAuth.Api.Controllers
         public async Task<IActionResult> Create([FromBody]UserModel model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState.First());
+                return BadRequest(ModelState.ToOptResult());
 
             var user =await _ctx.Users.Include(a => a.UserLogin).SingleOrDefaultAsync(a => a.Cell == model.Cell);
 

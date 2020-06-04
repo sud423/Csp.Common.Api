@@ -3,6 +3,7 @@ using Csp.Blog.Api.Models;
 using Csp.EF.Extensions;
 using Csp.EF.Paging;
 using Csp.Web;
+using Csp.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -80,7 +81,7 @@ namespace Csp.Blog.Api.Controllers
         public async Task<IActionResult> Create([FromBody]Article article)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState.First());
+                return BadRequest(ModelState.ToOptResult());
 
             if(article.Id>0)
             {
