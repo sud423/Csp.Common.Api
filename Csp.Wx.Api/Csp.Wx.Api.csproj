@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Csp.Logger" Version="1.0.0" />
-    <PackageReference Include="Csp.Web" Version="1.0.0" />
+    <PackageReference Include="Csp.Web" Version="1.0.1" />
     <PackageReference Include="Csp.Wx" Version="1.0.0" />
   </ItemGroup>
 </Project>
