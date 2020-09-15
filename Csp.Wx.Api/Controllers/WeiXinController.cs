@@ -68,7 +68,7 @@ namespace Csp.Wx.Api.Controllers
         public async Task<IActionResult> SendTemp([FromBody]TemplateMessage model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState.First());
+                return BadRequest(ModelState.ToOptResult());
 
 #if DEBUG
             await Task.CompletedTask;
