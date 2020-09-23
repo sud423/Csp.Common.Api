@@ -66,6 +66,21 @@ namespace Csp.Blog.Api.Controllers
         }
 
         /// <summary>
+        /// 获取下拉列表框
+        /// </summary>
+        /// <param name="tenantId">租户编号</param>
+        /// <param name="webSiteId">站点编号</param>
+        /// <returns></returns>
+        [HttpGet,Route("getdroplist/{tenantId:int}/{webSiteId:int}")]
+        public IActionResult GetDrop(int tenantId,int webSiteId)
+        {
+            var result = _blogDbContext.Categories
+                .Where(a=>a.TenantId==tenantId && a.WebSiteId==webSiteId && a.Status==1);
+
+            return Ok(result);
+        }
+
+        /// <summary>
         /// 创建或更新分类
         /// </summary>
         /// <param name="category"></param>
