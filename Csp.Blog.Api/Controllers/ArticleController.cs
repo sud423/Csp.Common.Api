@@ -7,6 +7,7 @@ using Csp.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -122,6 +123,24 @@ namespace Csp.Blog.Api.Controllers
 
         }
 
+        /// <summary>
+        /// 批量删除
+        /// </summary>
+        /// <param name="ids">批量id列表</param>
+        /// <returns></returns>
+        [HttpPost, Route("delete")]
+        public IActionResult Delete(IEnumerable<int> ids)
+        {
+            var articles = _blogDbContext.Articles.Where(a => ids.Any(s => s == a.Id)).ToList();
+            articles.ForEach(a =>
+            {
+                a.Status = 0;
+            });
+
+            //_blogDbContext.Update(articles);
+            _blogDbContext.SaveChanges();
+            return Ok();
+        }
         /// <summary>
         /// 审核
         /// </summary>
