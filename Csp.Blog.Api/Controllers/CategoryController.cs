@@ -71,11 +71,12 @@ namespace Csp.Blog.Api.Controllers
         /// <param name="tenantId">租户编号</param>
         /// <param name="webSiteId">站点编号</param>
         /// <returns></returns>
-        [HttpGet,Route("getdroplist/{tenantId:int}/{webSiteId:int}")]
-        public IActionResult GetDrop(int tenantId,int webSiteId)
+        [HttpGet,Route("getdroplist/{tenantId:int}")]
+        public IActionResult GetDrop(int tenantId)
         {
             var result = _blogDbContext.Categories
-                .Where(a=>a.TenantId==tenantId && a.WebSiteId==webSiteId && a.Status==1);
+                .Where(a => a.TenantId == tenantId && a.Status == 1)
+                .Select(a => new { a.Id, a.Name, a.WebSiteId });
 
             return Ok(result);
         }
