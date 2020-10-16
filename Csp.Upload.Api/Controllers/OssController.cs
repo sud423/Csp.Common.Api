@@ -73,7 +73,6 @@ namespace Csp.Upload.Api.Controllers
         [HttpPost, Route("oss/upload")]
         public IActionResult Upload(IFormFile file, string key = "image")
         {
-            string saveUrl;
             if (file != null)
             {
                 if (string.IsNullOrEmpty(key))
@@ -86,19 +85,38 @@ namespace Csp.Upload.Api.Controllers
                 if (_fileSerivce.IsAllowUploadExtension(file.FileName, key))
                     return BadRequest(OptResult.Failed("上传文件扩展名是不允许的扩展名\n只允许" + _fileSerivce.GetAllowExtension(key) + "格式。"));
 
-                var fileModel = _fileSerivce.Add(file.FileName, file.ContentType, file.Length, key);
+                result = _fileSerivce.Upload(file, key, $"{Request.GetDomain()}/oss");
+                return Ok(result);
 
-                saveUrl = $"{Request.GetDomain()}{Url.Action(nameof(Index).ToLower(), new { id = fileModel.Id })}";
-
-                using (var fileStream = new FileStream(fileModel.FilePath, FileMode.Create))
-                {
-                    file.CopyTo(fileStream);
-                    fileStream.Close();
-                }
-                return Ok(OptResult.Success(saveUrl));
             }
 
             return BadRequest(OptResult.Failed("请选择文件"));
+        }
+
+        /// <summary>
+        /// ckeditor编辑的用的simple-upload后台上传代码
+        /// </summary>
+        /// <param name="upload">待上传的文件</param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost, Route("oss/cke/upload")]
+        public IActionResult Upload(IFormFile upload)
+        {
+            string key = "image";
+            if (upload != null)
+            {
+                var result = _fileSerivce.IsContentLength(upload.Length, key);
+                if (!result.Succeed)
+                    return BadRequest(new { Uploaded = false, Error = new { Message = result.Msg } }); 
+
+                if (_fileSerivce.IsAllowUploadExtension(upload.FileName, key))
+                    return BadRequest(new { Uploaded = false, Error = new { Message = "上传文件扩展名是不允许的扩展名\n只允许" + _fileSerivce.GetAllowExtension(key) + "格式。" } });
+
+                result = _fileSerivce.Upload(upload, key, $"{Request.GetDomain()}/oss");
+                return Ok(new { Uploaded = true, Url = result.Msg });
+            }
+
+            return BadRequest(new { Uploaded = false, Error = new { Message = "请选择文件" } });
         }
     }
 }

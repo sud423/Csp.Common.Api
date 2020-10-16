@@ -1,5 +1,6 @@
 ﻿using Csp.Upload.Api.Models;
 using Csp.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace Csp.Upload.Api.Application.Services
 {
@@ -44,5 +45,14 @@ namespace Csp.Upload.Api.Application.Services
         /// <param name="key"></param>
         /// <returns></returns>
         OptResult IsContentLength(long length,string key);
+
+        /// <summary>
+        /// 上传文件
+        /// </summary>
+        /// <param name="file">待上传的文件</param>
+        /// <param name="key">上传文件类型</param>
+        /// <param name="localUrl">部署站点的url</param>
+        /// <returns></returns>
+        OptResult Upload(IFormFile file, string key, string localUrl);
     }
 }

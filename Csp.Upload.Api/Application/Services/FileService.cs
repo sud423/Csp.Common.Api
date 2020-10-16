@@ -3,6 +3,7 @@ using Csp.Upload.Api.Infrastructure;
 using Csp.Upload.Api.Models;
 using Csp.Web;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections;
 using System.IO;
@@ -94,6 +95,27 @@ namespace Csp.Upload.Api.Application.Services
                 return OptResult.Failed("上传文件大小超过限制1M");
 
             return OptResult.Success();
+        }
+
+        /// <summary>
+        /// 上传文件
+        /// </summary>
+        /// <param name="file">待上传的文件</param>
+        /// <param name="key">上传文件类型</param>
+        /// <param name="localUrl">部署站点的url</param>
+        /// <returns></returns>
+        public OptResult Upload(IFormFile file, string key, string localUrl)
+        {
+            var fileModel = Add(file.FileName, file.ContentType, file.Length, key);
+
+            string saveUrl = $"{localUrl}/{ fileModel.Id }";
+
+            using (var fileStream = new FileStream(fileModel.FilePath, FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+                fileStream.Close();
+            }
+            return OptResult.Success(saveUrl);
         }
     }
 }
