@@ -1,5 +1,6 @@
 ﻿using Csp.Blog.Api.Infrastructure;
 using Csp.Blog.Api.Models;
+using Csp.EF.Extensions;
 using Csp.EF.Paging;
 using Csp.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -75,8 +76,15 @@ namespace Csp.Blog.Api.Controllers
         [HttpGet, Route("articles/{tenantId:int}/{categoryId:int}/{webSiteId:int}")]
         public async Task<IActionResult> GetArticles(int tenantId, int categoryId, int webSiteId)
         {
+            var predicate = PredicateExtension.True<Article>();
+
+            predicate = predicate.And(a => a.TenantId == tenantId && a.Status == 1 && (a.WebSiteId == 0 || a.WebSiteId == webSiteId));
+
+            if (categoryId > 0)
+                predicate = predicate.And(a=>categoryId == a.CategoryId);
+
             var result = await _blogDbContext.Articles
-                .Where(a => a.TenantId == tenantId && a.Status == 1 && categoryId == a.CategoryId && (a.WebSiteId == 0 || a.WebSiteId == webSiteId))
+                .Where(predicate)
                 .OrderBy(a => a.Sort)
                 .ThenByDescending(a=>a.CreatedAt)
                 .ToListAsync();
@@ -93,8 +101,15 @@ namespace Csp.Blog.Api.Controllers
         [HttpGet, Route("articles/{tenantId:int}/{categoryId:int}/{webSiteId:int}/{size:int}")]
         public async Task<IActionResult> GetArticles(int tenantId,int categoryId, int webSiteId, int size)
         {
+            var predicate = PredicateExtension.True<Article>();
+
+            predicate = predicate.And(a => a.TenantId == tenantId && a.Status == 1 && (a.WebSiteId == 0 || a.WebSiteId == webSiteId));
+
+            if (categoryId > 0)
+                predicate = predicate.And(a => categoryId == a.CategoryId);
+
             var result = await _blogDbContext.Articles
-                .Where(a => a.TenantId == tenantId && a.Status == 1 && categoryId==a.CategoryId && (a.WebSiteId==0 || a.WebSiteId==webSiteId))
+                .Where(predicate)
                 .OrderBy(a => a.Sort)
                 .ThenByDescending(a => a.CreatedAt)
                 .Take(size)
