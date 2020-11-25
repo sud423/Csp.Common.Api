@@ -1,4 +1,5 @@
 ﻿using Csp.Jwt;
+using Csp.Upload.Api.Application.Dtos;
 using Csp.Upload.Api.Infrastructure;
 using Csp.Upload.Api.Models;
 using Csp.Web;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 
@@ -66,17 +68,55 @@ namespace Csp.Upload.Api.Application.Services
             return model;
         }
 
-        public string GetAllowExtension(string key)
-        {
-            return extTable[key].ToString();
-        }
-
-
-        public FileModel GetFilePathById(string id)
+        public FileOutput Get(string id)
         {
             var file = _ossDbContext.Files.SingleOrDefault(a => a.Id == id);
 
-            return file;
+            if (file == null || !File.Exists(file.FilePath))
+                return null;
+
+            using var sw = new FileStream(file.FilePath, FileMode.Open);
+            var bytes = new byte[sw.Length];
+            sw.Read(bytes, 0, bytes.Length);
+            sw.Close();
+
+            return new FileOutput(bytes,file.ContentType);
+        }
+
+        public FileOutput Get(string id, int width)
+        {
+            var file = _ossDbContext.Files.SingleOrDefault(a => a.Id == id);
+
+            if (file == null || !File.Exists(file.FilePath))
+                return null;
+
+            //缩小图片
+            using var imgBmp = new Bitmap(file.FilePath);
+            //找到新尺寸
+            var oWidth = imgBmp.Width;
+            var oHeight = imgBmp.Height;
+            var height = oHeight;
+            if (width > oWidth)
+            {
+                width = oWidth;
+            }
+            else
+            {
+                height = width * oHeight / oWidth;
+            }
+            var newImg = new Bitmap(imgBmp, width, height);
+            newImg.SetResolution(100, 100);
+            var ms = new MemoryStream();
+            newImg.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            var bytes = ms.GetBuffer();
+            ms.Close();
+
+            return new FileOutput(bytes, file.ContentType);
+        }
+
+        public string GetAllowExtension(string key)
+        {
+            return extTable[key].ToString();
         }
 
         public bool IsAllowUploadExtension(string filePath, string key)
@@ -89,10 +129,24 @@ namespace Csp.Upload.Api.Application.Services
         public OptResult IsContentLength(long length, string key)
         {
             if (length > 30*1024*1024 && key != "image")
-                OptResult.Failed("上传文件大小超过限制30M");
+                return OptResult.Failed("上传文件大小超过限制30M");
 
             if (length > 1 * 1024 * 1024 && key == "image")
                 return OptResult.Failed("上传文件大小超过限制1M");
+
+            return OptResult.Success();
+        }
+
+        public OptResult Remove(string id)
+        {
+            var file = _ossDbContext.Files.SingleOrDefault(a => a.Id == id);
+            if (file == null || !File.Exists(file.FilePath))
+                return OptResult.Failed("文件不存在");
+
+            File.Delete(file.FilePath);
+
+            _ossDbContext.Files.Remove(file);
+            _ossDbContext.SaveChanges();
 
             return OptResult.Success();
         }
@@ -104,7 +158,7 @@ namespace Csp.Upload.Api.Application.Services
         /// <param name="key">上传文件类型</param>
         /// <param name="localUrl">部署站点的url</param>
         /// <returns></returns>
-        public OptResult Upload(IFormFile file, string key, string localUrl)
+        public UploadOutput Upload(IFormFile file, string key, string localUrl)
         {
             var fileModel = Add(file.FileName, file.ContentType, file.Length, key);
 
@@ -115,7 +169,7 @@ namespace Csp.Upload.Api.Application.Services
                 file.CopyTo(fileStream);
                 fileStream.Close();
             }
-            return OptResult.Success(saveUrl);
+            return new UploadOutput(fileModel.Name, "done", fileModel.Id, saveUrl);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Csp.Upload.Api.Models;
+﻿using Csp.Upload.Api.Application.Dtos;
+using Csp.Upload.Api.Models;
 using Csp.Web;
 using Microsoft.AspNetCore.Http;
 
@@ -25,13 +26,6 @@ namespace Csp.Upload.Api.Application.Services
         string GetAllowExtension(string key);
         
         /// <summary>
-        /// 根据主键id获取文件存放路径
-        /// </summary>
-        /// <param name="id">文件编号</param>
-        /// <returns></returns>
-        FileModel GetFilePathById(string id);
-
-        /// <summary>
         /// 根据key判断当前的文件是否允许上传
         /// </summary>
         /// <param name="filePath">当前上传的文件路径</param>
@@ -53,6 +47,28 @@ namespace Csp.Upload.Api.Application.Services
         /// <param name="key">上传文件类型</param>
         /// <param name="localUrl">部署站点的url</param>
         /// <returns></returns>
-        OptResult Upload(IFormFile file, string key, string localUrl);
+        UploadOutput Upload(IFormFile file, string key, string localUrl);
+
+        /// <summary>
+        /// 根据id获取图片，并返回字节流数组
+        /// </summary>
+        /// <param name="id">图片编号</param>
+        /// <returns></returns>
+        FileOutput Get(string id);
+
+        /// <summary>
+        /// 根据id获取相应宽度的图片，并返回字节流数组 即按宽度获取缩略图
+        /// </summary>
+        /// <param name="id">图片编号</param>
+        /// <param name="width">指定宽度</param>
+        /// <returns></returns>
+        FileOutput Get(string id, int width);
+
+        /// <summary>
+        /// 根据图片编码删除图片
+        /// </summary>
+        /// <param name="id">图片编号</param>
+        /// <returns></returns>
+        OptResult Remove(string id);
     }
 }
