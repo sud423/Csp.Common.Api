@@ -169,7 +169,7 @@ namespace Csp.Upload.Api.Application.Services
                 file.CopyTo(fileStream);
                 fileStream.Close();
             }
-            return new UploadOutput(fileModel.Name, "done", fileModel.Id, saveUrl);
+            return new UploadOutput(fileModel.Name, fileModel.Id, saveUrl);
         }
     }
 }

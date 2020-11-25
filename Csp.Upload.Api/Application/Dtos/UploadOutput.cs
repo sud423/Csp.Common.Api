@@ -2,6 +2,8 @@
 {
     public class UploadOutput
     {
+        public bool Succeed { get; set; } = true;
+
         /// <summary>
         /// 文件名
         /// </summary>
@@ -10,7 +12,7 @@
         /// <summary>
         /// 状态有：uploading done error removed
         /// </summary>
-        public string Status { get; set; }
+        public string Status { get; set; } = "done";
 
         /// <summary>
         /// 文件唯一标识，建议设置为负数，防止和内部产生的 id 冲突
@@ -28,10 +30,9 @@
         public string ThumbUrl { get; set; }
 
 
-        public UploadOutput(string name,string status,string uid,string url,string thumbUrl="")
+        public UploadOutput(string name,string uid,string url,string thumbUrl="")
         {
             Name = name;
-            Status = status;
             Uid = uid;
             Url = url;
             ThumbUrl = thumbUrl;
