@@ -5,6 +5,7 @@ using Csp.Upload.Api.Models;
 using Csp.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections;
 using System.Drawing;
@@ -25,12 +26,15 @@ namespace Csp.Upload.Api.Application.Services
 
         readonly AppUser _appUser;
 
+        private readonly AppSettings _settings;
 
-        public FileService(IWebHostEnvironment environment, OssDbContext ossDbContext,IIdentityParser<AppUser> parser)
+
+        public FileService(IWebHostEnvironment environment, OssDbContext ossDbContext,IIdentityParser<AppUser> parser, IOptions<AppSettings> appSettings)
         {
             _environment = environment;
             _ossDbContext = ossDbContext;
             _appUser = parser.Parse();
+            _settings = appSettings.Value;
 
 
             extTable.Add("image", "gif,jpg,jpeg,png,bmp");
@@ -128,10 +132,10 @@ namespace Csp.Upload.Api.Application.Services
 
         public OptResult IsContentLength(long length, string key)
         {
-            if (length > 30*1024*1024 && key != "image")
+            if (length > _settings.FileMaxLength*1024*1024 && key != "image")
                 return OptResult.Failed("上传文件大小超过限制30M");
 
-            if (length > 1 * 1024 * 1024 && key == "image")
+            if (length > _settings.ImageMaxLength * 1024 * 1024 && key == "image")
                 return OptResult.Failed("上传文件大小超过限制1M");
 
             return OptResult.Success();

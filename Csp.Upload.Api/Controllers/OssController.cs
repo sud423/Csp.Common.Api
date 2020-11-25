@@ -121,7 +121,7 @@ namespace Csp.Upload.Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        [HttpPost,Route("oss/{id}")]
+        [HttpPost,Route("oss/delete/{id}")]
         public IActionResult Remove(string id)
         {
             return Ok(_fileSerivce.Remove(id));
