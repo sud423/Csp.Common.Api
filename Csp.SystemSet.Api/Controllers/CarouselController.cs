@@ -32,7 +32,7 @@ namespace Csp.SystemSet.Api.Controllers
         /// <param name="name">名称</param>
         /// <returns></returns>
         [HttpGet, Route("{tenantId:int}")]
-        public IActionResult Index(int tenantId,int webSiteId,string name)
+        public async Task<IActionResult> Index(int tenantId,int webSiteId,string name)
         {
             var predicate = PredicateExtension.True<Carousel>();
 
@@ -44,7 +44,7 @@ namespace Csp.SystemSet.Api.Controllers
             if (!string.IsNullOrWhiteSpace(name))
                 predicate = predicate.And(a => name.Contains(a.Name));
 
-            var results = _systemSetDbContext.Carousels.Where(predicate).OrderBy(a=>new { a.Sort,a.CreatedAt });
+            var results = await _systemSetDbContext.Carousels.Where(predicate).OrderBy(a=>a.Sort).ThenByDescending(a=>a.CreatedAt).ToListAsync();
 
             return Ok(results);
         }

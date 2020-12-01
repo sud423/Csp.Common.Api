@@ -29,6 +29,7 @@ namespace Csp.SystemSet.Api.Controllers
                 .Where(a => a.TenantId == tenantId && a.Status == 1
                 && webSiteId == a.WebSiteId)
                 .OrderBy(a => a.Sort)
+                .ThenByDescending(a => a.CreatedAt)
                 .ToListAsync();
 
             return Ok(result);

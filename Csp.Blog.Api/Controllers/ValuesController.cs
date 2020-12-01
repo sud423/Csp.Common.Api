@@ -33,6 +33,7 @@ namespace Csp.Blog.Api.Controllers
                 && webSiteId == a.WebSiteId 
                 && a.Type==type)
                 .OrderBy(a => a.Sort)
+                .ThenByDescending(a => a.CreatedAt)
                 .ToListAsync();
 
             return Ok(result);
