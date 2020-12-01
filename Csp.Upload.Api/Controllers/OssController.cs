@@ -126,5 +126,15 @@ namespace Csp.Upload.Api.Controllers
         {
             return Ok(_fileSerivce.Remove(id));
         }
+
+
+        [Authorize]
+        [Route("oss/import/img")]
+        public IActionResult ImportImage()
+        {
+            _fileSerivce.ImportImage();
+
+            return Ok(OptResult.Success());
+        }
     }
 }

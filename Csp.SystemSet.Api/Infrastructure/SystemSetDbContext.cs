@@ -11,5 +11,7 @@ namespace Csp.SystemSet.Api.Infrastructure
         }
 
         public DbSet<WebSite> WebSites { get; set; }
+
+        public DbSet<Carousel> Carousels { get; set; }
     }
 }

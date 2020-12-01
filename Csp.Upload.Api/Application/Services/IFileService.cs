@@ -70,5 +70,7 @@ namespace Csp.Upload.Api.Application.Services
         /// <param name="id">图片编号</param>
         /// <returns></returns>
         OptResult Remove(string id);
+
+        void ImportImage();
     }
 }

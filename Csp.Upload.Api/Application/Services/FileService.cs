@@ -79,7 +79,7 @@ namespace Csp.Upload.Api.Application.Services
             if (file == null || !File.Exists(file.FilePath))
                 return null;
 
-            using var sw = new FileStream(file.FilePath, FileMode.Open);
+            using var sw = new FileStream(file.FilePath, FileMode.Open, FileAccess.Read);
             var bytes = new byte[sw.Length];
             sw.Read(bytes, 0, bytes.Length);
             sw.Close();
@@ -121,6 +121,38 @@ namespace Csp.Upload.Api.Application.Services
         public string GetAllowExtension(string key)
         {
             return extTable[key].ToString();
+        }
+
+        public void ImportImage()
+        {
+            string dirPath = Path.Combine(_environment.ContentRootPath, @"attached\image");
+            var dires = Directory.GetDirectories(dirPath);
+            foreach(string dir in dires)
+            {
+                var files=Directory.GetFiles(dir);
+
+                foreach(string file in files)
+                {
+                    var ext= Path.GetExtension(file);
+
+                    FileModel model = new FileModel
+                    {
+                        Name = Path.GetFileName(file),
+                        FilePath = file,
+                        FileSize = File.Open(file, FileMode.Open, FileAccess.Read).Length,
+                        Ext = ext,
+                        ContentType = ext == "png" ? "image/png" : "image/jpeg",
+                        UserId = 263,
+                        TenantId = 3,
+                        Id = Path.GetFileName(file).Replace(ext, "")
+                    };
+
+                    _ossDbContext.Files.Add(model);
+
+                    _ossDbContext.SaveChanges();
+                }
+            }
+
         }
 
         public bool IsAllowUploadExtension(string filePath, string key)
