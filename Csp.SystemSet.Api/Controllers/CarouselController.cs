@@ -79,7 +79,7 @@ namespace Csp.SystemSet.Api.Controllers
             if (carousel.Id > 0)
             {
                 var old = await _systemSetDbContext.Carousels.SingleOrDefaultAsync(a => a.Id == carousel.Id);
-                old.Update(carousel.Name,carousel.Url,carousel.Sort);
+                old.Update(carousel.Name,carousel.Url,carousel.Sort,carousel.WebSiteId);
 
                 _systemSetDbContext.Carousels.Update(old);
             }

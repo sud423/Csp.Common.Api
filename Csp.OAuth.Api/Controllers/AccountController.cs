@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Csp.OAuth.Api.Controllers
 {
-    [Route("api/v1/account")]
+    [Route("api/v1/{controller}")]
     public class AccountController : ControllerBase
     {
         private readonly OAuthDbContext _ctx;

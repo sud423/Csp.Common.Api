@@ -1,4 +1,5 @@
 ﻿using Csp.EF;
+using Csp.OAuth.Api.Application;
 using System.Text.Json.Serialization;
 
 namespace Csp.OAuth.Api.Models
@@ -16,5 +17,10 @@ namespace Csp.OAuth.Api.Models
         [JsonIgnore]
         public virtual User User { get; set; }
 
+
+        public void SetNewPwd(string pwd)
+        {
+            Password = PasswordHasher.Hash(pwd);
+        }
     }
 }

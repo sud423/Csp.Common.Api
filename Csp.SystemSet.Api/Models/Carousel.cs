@@ -49,11 +49,12 @@ namespace Csp.SystemSet.Api.Models
         /// </summary>
         /// <param name="name"></param>
         /// <param name="url"></param>
-        public void Update(string name,string url,int sort)
+        public void Update(string name,string url,int sort,int webSiteId)
         {
             Name = name;
             Url = url;
             Sort = sort;
+            WebSiteId = webSiteId;
         }
 
 
