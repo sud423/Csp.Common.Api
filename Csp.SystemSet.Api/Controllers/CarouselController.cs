@@ -124,14 +124,14 @@ namespace Csp.SystemSet.Api.Controllers
         [HttpDelete, Route("delete/{id:int}")]
         public async Task<IActionResult> Deprecated(int id)
         {
-            var artice = await _systemSetDbContext.Carousels.SingleOrDefaultAsync(a => a.Id == id);
+            var carousel = await _systemSetDbContext.Carousels.SingleOrDefaultAsync(a => a.Id == id);
 
-            if (artice == null || artice.Id <= 0)
+            if (carousel == null || carousel.Id <= 0)
                 return BadRequest(OptResult.Failed("删除的数据不存在"));
 
-            artice.Status = 0;
+            carousel.Status = 0;
 
-            _systemSetDbContext.Carousels.Update(artice);
+            _systemSetDbContext.Carousels.Update(carousel);
 
             await _systemSetDbContext.SaveChangesAsync();
             return Ok(OptResult.Success());
@@ -146,8 +146,8 @@ namespace Csp.SystemSet.Api.Controllers
         [HttpPost, Route("delete")]
         public IActionResult Delete(IEnumerable<int> ids)
         {
-            var articles = _systemSetDbContext.Carousels.Where(a => ids.Any(s => s == a.Id)).ToList();
-            articles.ForEach(a =>
+            var carousels = _systemSetDbContext.Carousels.Where(a => ids.Any(s => s == a.Id)).ToList();
+            carousels.ForEach(a =>
             {
                 a.Status = 0;
             });
