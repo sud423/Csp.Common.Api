@@ -227,6 +227,9 @@ namespace Csp.Blog.Api.Controllers
 
                 _blogDbContext.Resources.Update(resource);
             }
+            
+            browseHistory.WebSiteId = resource.WebSiteId;
+            browseHistory.TenantId = resource.TenantId;
 
             await _blogDbContext.BrowseHistories.AddAsync(browseHistory);
 
