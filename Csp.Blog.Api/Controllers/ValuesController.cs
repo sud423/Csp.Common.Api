@@ -170,6 +170,9 @@ namespace Csp.Blog.Api.Controllers
                 _blogDbContext.Articles.Update(article);
             }
 
+            browseHistory.WebSiteId = article.WebSiteId;
+            browseHistory.TenantId = article.TenantId;
+
             await _blogDbContext.BrowseHistories.AddAsync(browseHistory);
 
             await _blogDbContext.SaveChangesAsync();
